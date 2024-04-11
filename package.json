@@ -20,8 +20,16 @@
     "react",
     "vue"
   ],
-  "author": "guholovex",
+  "author": "guho-lovex <l2276227464@163.com>",
   "license": "MIT",
+  "homepage": "https://github.com/guho-lovex/vite-plugin-flairmd#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guho-lovex/vite-plugin-flairmd"
+  },
+  "bugs": {
+    "url": "https://github.com/guho-lovex/vite-plugin-flairmd/issues"
+  },
   "dependencies": {
     "gray-matter": "^4.0.3",
     "highlight.js": "^11.9.0",
