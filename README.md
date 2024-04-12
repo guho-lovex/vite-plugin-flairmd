@@ -13,13 +13,14 @@ A Vite plugin to parse complex Markdown files with frontmatter support and exten
 ## Installation
 
 ```bash
-pnpm add vite-plugin-flairmd --save-dev
+npm install vite-plugin-flairmd --save-dev
 ```
 
-Or if you are using npm:
+Or if you are using yarn or pnpm:
 
 ```bash
-npm install vite-plugin-flairmd --save-dev
+yarn add -D vite-plugin-flairmd
+pnpm add -D vite-plugin-flairmd
 ```
 
 ## Usage
