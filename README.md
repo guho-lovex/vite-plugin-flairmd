@@ -1,6 +1,6 @@
 # vite-plugin-flairmd
 
-[![npm](https://img.shields.io/npm/v/vite-plugin-flairmd.svg)](https://www.npmjs.com/package/vite-plugin-flairmd) [![npm beta channel](https://img.shields.io/npm/v/vite-plugin-flairmd/beta?style=for-the-badge&label=beta&color=yellowgreen)](https://www.npmjs.com/package/vite-plugin-flairmd/v/beta)
+[![npm](https://img.shields.io/npm/v/vite-plugin-flairmd.svg)](https://www.npmjs.com/package/vite-plugin-flairmd)
 
 
 
