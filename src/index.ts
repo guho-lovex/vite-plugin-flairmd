@@ -65,7 +65,7 @@ export default function VitePluginFlairMd(
 
         const code = `export default { frontmatter: ${JSON.stringify(
           frontmatter
-        )};
+        )},
         content: ${JSON.stringify(htmlContent)} }`;
 
         return { code, map: null };
