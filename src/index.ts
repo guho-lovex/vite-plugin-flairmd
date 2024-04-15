@@ -1,4 +1,5 @@
 import { Plugin } from "vite";
+import path from "path";
 import MarkdownIt from "markdown-it";
 import matter from "gray-matter";
 import hljs from "highlight.js"; // 用于代码块的语法高亮
@@ -7,8 +8,13 @@ import markdownItTocDoneRight from "markdown-it-toc-done-right"; // 自动生成
 import markdownItContainer from "markdown-it-container"; // 自定义容器
 import markdownItAttrs from "markdown-it-attrs"; // 添加自定义属性
 import markdownItReplaceLink from "markdown-it-replace-link"; // 替换链接
+import defaultStyles from "./style";
 
 interface vitePluginFlairMdOptions {
+  /** Users can specify style paths or false to disable the default style */
+  themStyles?: string | false;
+  /** Custom highlight theme styles */
+  highlightThemeStyle?: string | false;
   markdownItOptions?: MarkdownIt.Options;
   /** Array of [plugin, ...params] */
   markdownItUsers?: Array<[any, ...any[]]>;
@@ -17,21 +23,29 @@ interface vitePluginFlairMdOptions {
 }
 
 export default function VitePluginFlairMd(
-  options: vitePluginFlairMdOptions = {}
+  options: vitePluginFlairMdOptions = {
+    themStyles: false,
+    highlightThemeStyle: false,
+  }
 ): Plugin {
-  const markdown = new MarkdownIt({
+  const markdown: MarkdownIt = new MarkdownIt({
     html: true,
     xhtmlOut: true,
     linkify: true,
     typographer: true,
-    highlight(str, lang, attrs) {
+    highlight(str, lang) {
       if (lang && hljs.getLanguage(lang)) {
         try {
-          return hljs.highlight(str, { language: lang, ignoreIllegals: true })
-            .value;
+          return `<pre class="hljs"><code>
+          ${
+            hljs.highlight(str, { language: lang, ignoreIllegals: true }).value
+          } 
+          </code></pre>`;
         } catch (__) {}
       }
-      return ""; // 使用外部的 highlight.js 库
+      return `<pre class='hljs'><code>
+        ${markdown.utils.escapeHtml(str)}
+        </code></pre>`;
     },
     ...options.markdownItOptions,
   });
@@ -63,10 +77,25 @@ export default function VitePluginFlairMd(
         const { data: frontmatter, content } = matter(src);
         const htmlContent = markdown.render(content);
 
-        const code = `export default { frontmatter: ${JSON.stringify(
-          frontmatter
-        )},
-        content: ${JSON.stringify(htmlContent)} }`;
+        // 获取样式加载器模块路径
+        const styleLoaderPath = JSON.stringify(
+          path.resolve(__dirname, "styleLoader.ts")
+        );
+
+        const themeStylePath =
+          options.themStyles || options.themStyles !== false;
+        options.themStyles || defaultStyles;
+
+        const highlightThemePath =
+          options.highlightThemeStyle || options.highlightThemeStyle !== false;
+        options.highlightThemeStyle || "highlight.js/styles/googlecode.min.css";
+
+        const code = `
+        import { injectStyles, loadStyle } from ${styleLoaderPath};
+        loadStyle(${JSON.stringify(highlightThemePath)});
+        injectStyles(${JSON.stringify(themeStylePath)});
+        export default { frontmatter: ${JSON.stringify(frontmatter)},
+        content: ${JSON.stringify(`<div>${htmlContent}</div>`)} }`;
 
         return { code, map: null };
       }

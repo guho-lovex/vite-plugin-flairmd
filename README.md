@@ -58,6 +58,10 @@ You can pass options to the markdown-it parser:
 
 ```js
 flairmd({
+  // specify style paths or false to disable the default style
+  themStyles: false,
+  // Custom highlight theme styles
+  highlightThemeStyle: false,
   markdownItOptions: {
     // markdown-it options
   },
