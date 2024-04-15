@@ -2,8 +2,6 @@
 
 [![npm](https://img.shields.io/npm/v/vite-plugin-flairmd.svg)](https://www.npmjs.com/package/vite-plugin-flairmd)
 
-
-
 A Vite plugin to parse complex Markdown files with frontmatter support and extendable parsing features.
 
 ## Features
@@ -48,7 +46,7 @@ export default defineConfig({
 Now you can import Markdown files in your Vite project:
 
 ```js
-import { frontmatter, default as content } from "./path/to/file.md";
+import { frontmatter, content } from "./path/to/file.md";
 
 console.log(frontmatter); // Parsed frontmatter as an object
 console.log(content); // Parsed Markdown content as HTML string
