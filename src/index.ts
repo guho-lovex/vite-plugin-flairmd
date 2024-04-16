@@ -1,6 +1,7 @@
 import { Plugin } from "vite";
 import { fileURLToPath } from "url";
-import path from "path";
+import fs from "fs";
+import path, { join } from "path";
 import MarkdownIt from "markdown-it";
 import matter from "gray-matter";
 import hljs from "highlight.js"; // 用于代码块的语法高亮
@@ -10,7 +11,7 @@ import markdownItContainer from "markdown-it-container"; // 自定义容器
 import markdownItAttrs from "markdown-it-attrs"; // 添加自定义属性
 import markdownItReplaceLink from "markdown-it-replace-link"; // 替换链接
 
-import defaultStyles from "./style.css";
+import "./index.css";
 interface vitePluginFlairMdOptions {
   /** Users can specify style paths or false to disable the default style */
   themStyles?: string | false;
@@ -35,18 +36,23 @@ export default function VitePluginFlairMd(
     linkify: true,
     typographer: true,
     highlight(str, lang) {
+      // const code = hljs
+      //   .highlight(str, { language: lang, ignoreIllegals: true })
+      //   .value.split("\n") // 将字符串分割成行
+      //   .map((line) => line.trimStart()) // 移除每行开头的空白
+      //   .join("\n"); // 重新组合行
+
+      // const wrappedCode = `<pre class="hljs"><code>${code}</code></pre>`;
       if (lang && hljs.getLanguage(lang)) {
         try {
-          return `<pre class="hljs"><code>
-          ${
+          return `<pre class="hljs"><code>${
             hljs.highlight(str, { language: lang, ignoreIllegals: true }).value
-          } 
-          </code></pre>`;
+          }</code></pre>`;
         } catch (__) {}
       }
-      return `<pre class='hljs'><code>
-        ${markdown.utils.escapeHtml(str)}
-        </code></pre>`;
+      return `<pre class='hljs'><code>${markdown.utils.escapeHtml(
+        str
+      )}</code></pre>`;
     },
     ...options.markdownItOptions,
   });
@@ -83,21 +89,28 @@ export default function VitePluginFlairMd(
 
         // 获取样式加载器模块路径
         const styleLoaderPath = JSON.stringify(
-          path.resolve(__dirname, "styleLoader.ts")
+          path.resolve(__dirname, "styleLoader.js")
         );
 
-        const themeStylePath =
-          options.themStyles || options.themStyles !== false;
-        options.themStyles || defaultStyles;
+        // 构建默认样式模块路径
+        const defaultStylesPath = join(__dirname, "index.css");
 
         const highlightThemePath =
-          options.highlightThemeStyle || options.highlightThemeStyle !== false;
-        options.highlightThemeStyle || "highlight.js/styles/googlecode.min.css";
+          options.highlightThemeStyle !== false &&
+          options.highlightThemeStyle !== undefined
+            ? options.highlightThemeStyle
+            : "highlight.js/styles/googlecode.min.css";
+
+        const themeStylePath =
+          options.themStyles !== false && options.themStyles !== undefined
+            ? fs.readFileSync(options.themStyles, "utf-8")
+            : fs.readFileSync(defaultStylesPath, "utf-8");
 
         const code = `
-        import { injectStyles, loadStyle } from ${styleLoaderPath};
-        loadStyle(${JSON.stringify(highlightThemePath)});
-        injectStyles(${JSON.stringify(themeStylePath)});
+        import { injectStyles } from ${styleLoaderPath};
+        injectStyles(${JSON.stringify(highlightThemePath)}, ${JSON.stringify(
+          themeStylePath
+        )});
         export default { frontmatter: ${JSON.stringify(frontmatter)},
         content: ${JSON.stringify(`<div>${htmlContent}</div>`)} }`;
 

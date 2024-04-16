@@ -5,10 +5,10 @@ import postcss from "rollup-plugin-postcss";
 import { terser } from "rollup-plugin-terser";
 
 export default {
-  input: "src/index.ts",
+  input: { index: "src/index.ts", styleLoader: "src/styleLoader.js" },
   output: [
     {
-      file: "dist/index.js",
+      dir: "dist",
       format: "esm",
     },
   ],
