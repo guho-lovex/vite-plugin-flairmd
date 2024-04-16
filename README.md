@@ -38,6 +38,8 @@ export default defineConfig({
   plugins: [
     flairmd({
       // Your custom options here
+      themeStyles: "./path/to/theme.css", // Path to your custom theme styles
+      highlightThemeStyle: "highlight.js/styles/googlecode.min.css", // Path to highlight.js theme styles
     }),
   ],
 });

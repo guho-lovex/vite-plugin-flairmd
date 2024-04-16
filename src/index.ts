@@ -1,4 +1,5 @@
 import { Plugin } from "vite";
+import { fileURLToPath } from "url";
 import path from "path";
 import MarkdownIt from "markdown-it";
 import matter from "gray-matter";
@@ -8,8 +9,8 @@ import markdownItTocDoneRight from "markdown-it-toc-done-right"; // 自动生成
 import markdownItContainer from "markdown-it-container"; // 自定义容器
 import markdownItAttrs from "markdown-it-attrs"; // 添加自定义属性
 import markdownItReplaceLink from "markdown-it-replace-link"; // 替换链接
-import defaultStyles from "./style";
 
+import defaultStyles from "./style.css";
 interface vitePluginFlairMdOptions {
   /** Users can specify style paths or false to disable the default style */
   themStyles?: string | false;
@@ -76,6 +77,9 @@ export default function VitePluginFlairMd(
       if (id.endsWith(".md")) {
         const { data: frontmatter, content } = matter(src);
         const htmlContent = markdown.render(content);
+
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
 
         // 获取样式加载器模块路径
         const styleLoaderPath = JSON.stringify(
