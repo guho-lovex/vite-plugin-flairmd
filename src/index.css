@@ -46,6 +46,7 @@ code {
   margin-right: 2px;
 }
 
+pre.hjs > code,
 code[class*="language-"] {
   background-color: transparent;
   padding: 0;
@@ -53,7 +54,7 @@ code[class*="language-"] {
   border-radius: 6px;
 }
 
-pre {
+pre.hljs {
   background-color: #f6f8fa;
   padding: 16px;
   overflow: auto;
